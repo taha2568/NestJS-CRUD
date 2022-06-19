@@ -9,6 +9,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const status = exception.getStatus();
 
+        console.log(exception);
+
         let message;
         if (status == 400) {
             message = 'Bad Request, You may send inappropriate types!';

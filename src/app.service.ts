@@ -1,6 +1,7 @@
 import {Injectable, Body, HttpException, HttpStatus} from '@nestjs/common';
 import {Product} from '../models/Product';
 import {Product as ProductInterface} from '../models/product.interface';
+import {UpdateDTO} from '../models/update.product.interface';
 
 @Injectable()
 export class ProductService {
@@ -42,18 +43,20 @@ export class ProductService {
     }
 
     async deleteProduct(id: number) {
-        let number_of_deleted_product = await Product.query().deleteById('id');
+        let number_of_deleted_product = await Product.query()
+            .delete()
+            .where('id',id);
         if(!number_of_deleted_product) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
         }
 
     }
 
-    async updateProduct(id: number, updatedProperties: ProductInterface){
-        let number_of_updated_product = Product.query()
-            .findById(id)
-            .patch(updatedProperties);
-        if(!number_of_updated_product) {
+    async updateProduct(id: number, updatedProperties: UpdateDTO){
+       let updatedAt = {"updatedAt": new Date()};
+        let updated_product = await Product.query().patchAndFetchById(id, {...updatedProperties,...updatedAt})
+        console.log(updated_product);
+        if(!updated_product) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
         }
     }
