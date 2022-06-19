@@ -1,10 +1,24 @@
-import {Body, Controller, Delete, Get, Param, Patch, Post, Res} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpException,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+    Res,
+    UseFilters
+} from '@nestjs/common';
 import {ProductService} from './app.service';
 import {Product as ProductInterface} from "../models/product.interface";
 import {Response} from 'express';
+import {HttpExceptionFilter} from './exception.filter';
 
 
 @Controller()
+@UseFilters(HttpExceptionFilter)
 export class AppController {
     constructor(private readonly productService: ProductService) {
     }
@@ -41,10 +55,13 @@ export class AppController {
         }
     }
 
-    @Patch()
-    async updateProduct(@Body() productDTO: ProductInterface){
+    @Patch(':id')
+    async updateProduct(@Body() updatedProperties: ProductInterface, @Param('id') id, @Res() res: Response){
         console.log('Request: Update an specific product');
-
+        let number_of_updated_product = this.productService.updateProduct(id, updatedProperties);
+        if(number_of_updated_product){
+            res.status(200).json({msg: `the new properties have been set for product with id ${id}`});
+        }
     }
 
 }
