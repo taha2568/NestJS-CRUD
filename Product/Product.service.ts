@@ -1,7 +1,8 @@
-import {Injectable, Body, HttpException, HttpStatus} from '@nestjs/common';
+import {Injectable, HttpException, HttpStatus} from '@nestjs/common';
 import {Product} from '../models/Product';
-import {Product as ProductInterface} from '../models/product.interface';
-import {UpdateDTO} from '../models/update.product.interface';
+import {Product as ProductInterface} from '../models/create.product.dto';
+import {UpdateDTO} from '../models/update.product.dto';
+
 
 @Injectable()
 export class ProductService {
@@ -53,7 +54,7 @@ export class ProductService {
     }
 
     async updateProduct(id: number, updatedProperties: UpdateDTO){
-       let updatedAt = {"updatedAt": new Date()};
+        let updatedAt = {"updatedAt": new Date()};
         let updated_product = await Product.query().patchAndFetchById(id, {...updatedProperties,...updatedAt})
         console.log(updated_product);
         if(!updated_product) {

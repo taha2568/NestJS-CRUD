@@ -15,5 +15,5 @@ export class Product{
     price: number;
     @ValidateIf(o => o.description != undefined)
     @IsString()
-    description: string | null;
+    description?: string | null;
 }
